@@ -11,9 +11,14 @@ export function ConnectButton() {
   return (
     <div>
       {!connectedWallet && (
-        <button onClick={() => connect(ConnectType.EXTENSION)}>
-          Connect
-        </button>
+        <>
+          <button onClick={() => connect(ConnectType.EXTENSION)}>
+            Connect via extension
+          </button>
+          <button onClick={() => connect(ConnectType.WALLETCONNECT)}>
+            Connect via WalletConnect
+          </button>
+        </>
       )}
       {connectedWallet && (
         <>
