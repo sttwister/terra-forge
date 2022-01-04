@@ -1,6 +1,8 @@
 import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { useEffect, useState, useMemo } from 'react';
 
+import { LiquidationBid } from 'components/LiquidationBid';
+
 
 const overseer_contract = "terra1tmnqgvg567ypvsvk6rwsga3srp7e3lg6u0elp8";
 const oracle_contract = "terra1cgg6yef7qcdm070qftghfulaxmllgmvk77nc7t";
@@ -234,7 +236,7 @@ export function AnchorStrategy() {
       {bids && (
         <>
           <h3>Liquidation Bids</h3>
-          {bids.map((bid) => <pre>ID {bid.idx} - {bid.premium_slot}% - {bid.amount.toFixed(2)}$ - {bid.liquidated.toFixed(2)} bLUNA</pre>)}
+          {bids.map((bid) => <LiquidationBid bid={bid} />)}
           {totalUSTinBids && (
             <>
               <h4>Total UST in bids</h4>
