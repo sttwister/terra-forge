@@ -15,10 +15,10 @@ export function AnchorStrategy() {
   const lcd = useLCDClient();
   const connectedWallet = useConnectedWallet();
 
-  const [collaterals, setCollaterals] = useState<null | {[key: string]: number}>();
-  const [prices, setPrices] = useState<null | {[key: string]: number}>();
-  const [borrowedAmount, setBorrowedValue] = useState<null | number>();
-  const [bids, setBids] = useState<null | Array<{[key: string]: number}>>();
+  const [collaterals, setCollaterals] = useState();
+  const [prices, setPrices] = useState();
+  const [borrowedAmount, setBorrowedValue] = useState();
+  const [bids, setBids] = useState();
 
   /**
    * Anchor collateral
@@ -28,9 +28,7 @@ export function AnchorStrategy() {
   const updatePrices = async () => {
     if (connectedWallet && lcd) {
       // Get prices from oracle
-      const response : {
-        prices: Array<{[key: string]: any}>
-      } = await lcd.wasm.contractQuery(oracle_contract, {'prices': {}});
+      const response = await lcd.wasm.contractQuery(oracle_contract, {'prices': {}});
 
       // Transform response into a easy dictionary lookup
       // response = {prices: [{ asset: ..., price: ...}, { ... } ]}
@@ -56,13 +54,10 @@ export function AnchorStrategy() {
         }
       };
 
-      const response : {
-        borrower: string,
-        collaterals: Array<Array<string>>
-      } = await lcd.wasm.contractQuery(overseer_contract, query);
+      const response = await lcd.wasm.contractQuery(overseer_contract, query);
 
       // Transform response to {asset: value, ...} format
-      let collaterals : {[key: string]: number} = {};
+      let collaterals = {};
       collaterals = response.collaterals.reduce((obj, item) => {
         obj[item[0]] = parseInt(item[1]) / 10 ** 6;
         return obj;
@@ -82,9 +77,7 @@ export function AnchorStrategy() {
           'borrower': connectedWallet.walletAddress
         }
       }
-      const response : {
-        loan_amount: string
-      } = await lcd.wasm.contractQuery(market_contract, query);
+      const response = await lcd.wasm.contractQuery(market_contract, query);
       setBorrowedValue(parseInt(response.loan_amount) / 10 ** 6);
     } else {
       setBorrowedValue(null);
@@ -115,9 +108,7 @@ export function AnchorStrategy() {
           'bidder': connectedWallet.walletAddress,
         }
       }
-      const response : {
-        bids: Array<{[key: string]: string}>
-      } = await lcd.wasm.contractQuery(liquidation_contract, query)
+      const response = await lcd.wasm.contractQuery(liquidation_contract, query)
 
       // Sort by premium and keep only relevant information
       const bids = response.bids.map((bid) => {
